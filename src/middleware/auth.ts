@@ -18,11 +18,11 @@ const auth = (...roles: string[]) => {
             console.log({ authToken: token });
             req.user = decoded;
 
-            if (roles.length && !roles.includes(decoded.role as string)) {
-                return res.status(500).json({
-                    error: "Unauthorized"
-
-                })
+            if (!decoded.role || (roles.length && !roles.includes(decoded.role as string))) {
+                return res.status(403).json({
+                    success: false,
+                    message: "Forbidden: You do not have access"
+                });
             }
             next();
         } catch (err: any) {

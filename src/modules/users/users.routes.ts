@@ -6,10 +6,10 @@ const router = Router();
 
 router.post("/", usersController.createUser);
 
-router.get("/", usersController.getUser);
+router.get("/", auth("admin"), usersController.getUser);
 
 router.put("/:id", usersController.updateSingleUser);
 
-router.delete("/:id", usersController.deleteSingleUser);
+router.delete("/:id", auth("admin"), usersController.deleteSingleUser);
 
 export const usersRoutes = router;
