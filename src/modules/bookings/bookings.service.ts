@@ -28,6 +28,32 @@ const createBooking = async (payload: Record<string, unknown>) => {
     return booking;
 };
 
+const getBookings = async () => {
+
+    const bookingResult = await pool.query(`SELECT * FROM bookings ORDER BY id DESC`);
+    const bookings = bookingResult.rows
+
+    const enrichedBookings = []
+
+    for (const booking of bookings) {
+        const customerResult = await pool.query(`SELECT name, email FROM users WHERE id=$1`, [booking.customer_id]);
+        const customer = customerResult.rows[0]
+
+        const vehicleResult = await pool.query(`SELECT vehicle_name, registration_number FROM vehicles WHERE id=$1`, [booking.vehicle_id]);
+        const vehicle = vehicleResult.rows[0];
+
+        enrichedBookings.push({
+            ...bookings,
+            customer,
+            vehicle
+        })
+
+        return enrichedBookings;
+    }
+
+};
+
 export const bookingsService = {
-    createBooking
+    createBooking,
+    getBookings
 }
