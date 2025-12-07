@@ -5,4 +5,6 @@ const router = Router();
 
 router.post("/", vehiclesController.createVehicle);
 
+router.get("/", vehiclesController.getVehicle);
+
 export const vehiclesRoutes = router;
