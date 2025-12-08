@@ -75,7 +75,7 @@ const deleteSingleUser = async (req: Request, res: Response) => {
             message: err.message
         })
     }
-}
+};
 
 export const usersController = {
     createUser,

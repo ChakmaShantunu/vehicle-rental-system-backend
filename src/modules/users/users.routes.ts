@@ -8,7 +8,7 @@ router.post("/", usersController.createUser);
 
 router.get("/", auth("admin"), usersController.getUser);
 
-router.put("/:id", auth("admin", "user"), usersController.updateSingleUser);
+router.put("/:id", auth("admin", "customer"), usersController.updateSingleUser);
 
 router.delete("/:id", auth("admin"), usersController.deleteSingleUser);
 

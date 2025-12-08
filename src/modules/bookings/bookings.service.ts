@@ -28,10 +28,18 @@ const createBooking = async (payload: Record<string, unknown>) => {
     return booking;
 };
 
-const getBookings = async () => {
+const getBookings = async (user: { id: number, role: string }) => {
 
-    const bookingResult = await pool.query(`SELECT * FROM bookings ORDER BY id DESC`);
+    let bookingResult;
+
+    if (user.role === 'customer') {
+        bookingResult = await pool.query(`SELECT * FROM bookings WHERE customer_id=$1 ORDER BY id DESC`, [user.id]);
+    } else {
+        bookingResult = await pool.query(`SELECT * FROM bookings ORDER BY id DESC`);
+    }
+
     const bookings = bookingResult.rows
+
 
     const enrichedBookings = []
 
@@ -48,8 +56,10 @@ const getBookings = async () => {
             vehicle
         })
 
-        return enrichedBookings;
+
     }
+
+    return enrichedBookings;
 
 };
 

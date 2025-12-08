@@ -19,10 +19,11 @@ const createBooking = async (req: Request, res: Response) => {
 
 const getBookings = async (req: Request, res: Response) => {
     try {
-        const bookings = await bookingsService.getBookings();
+        const user = req.user as { id: number; role: string };
+        const bookings = await bookingsService.getBookings(user);
         res.status(200).json({
             success: true,
-            message: "Bookings retrieved successfully",
+            message: user.role === "customer" ? "Your bookings retrieved successfully" : "Bookings retrieved successfully",
             data: bookings
         });
     } catch (err: any) {
@@ -32,6 +33,7 @@ const getBookings = async (req: Request, res: Response) => {
         })
     }
 };
+
 
 const updateBooking = async (req: Request, res: Response) => {
     try {
