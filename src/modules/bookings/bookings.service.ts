@@ -43,7 +43,7 @@ const getBookings = async () => {
         const vehicle = vehicleResult.rows[0];
 
         enrichedBookings.push({
-            ...bookings,
+            ...booking,
             customer,
             vehicle
         })
@@ -53,7 +53,46 @@ const getBookings = async () => {
 
 };
 
+const updateBooking = async (id: string, payload: Record<string, unknown>) => {
+    const { status } = payload;
+
+    const bookingResult = await pool.query(`SELECT * FROM bookings WHERE id=$1`, [id]);
+
+    if (bookingResult.rows.length === 0) {
+        throw Error("Booking not found")
+    }
+
+    const booking = bookingResult.rows[0]
+
+    if (status === "cancelled") {
+        const updatedBooking = await pool.query(`UPDATE bookings SET status='cancelled' WHERE id=$1 RETURNING *`, [id]);
+
+        return {
+            message: "Booking cancelled successfully",
+            data: updatedBooking.rows[0]
+        }
+    }
+
+    if (status === 'returned') {
+        const updateVehicle = await pool.query(`UPDATE vehicles SET availability_status='available' WHERE id=$1`, [booking.vehicle_id]);
+        const updatedResult = await pool.query(`UPDATE bookings SET status='returned' WHERE id=$1 RETURNING *`, [id]);
+        const updatedBooking = updatedResult.rows[0]
+
+        updatedBooking.vehicle = {
+            availability_status: "available"
+        }
+
+        return {
+            message: "Booking marked as returned. Vehicle is now available",
+            data: updatedBooking,
+        };
+    }
+
+    throw new Error("Invalid status update request");
+};
+
 export const bookingsService = {
     createBooking,
-    getBookings
+    getBookings,
+    updateBooking
 }
