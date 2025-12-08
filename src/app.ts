@@ -28,7 +28,7 @@ app.use((req: Request, res: Response) => {
 })
 
 app.get('/', (req: Request, res: Response) => {
-    res.send('Hello World! boss, great to see you')
+    res.send('Hello World! boss, great to see you');
 });
 
 app.post("/", (req: Request, res: Response) => {
