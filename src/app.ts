@@ -19,6 +19,14 @@ app.use("/v1/auth", authRoutes);
 
 app.use("/v1/bookings", bookingsRoutes);
 
+app.use((req: Request, res: Response) => {
+    res.status(404).json({
+        success: false,
+        message: "Route not found",
+        path: req.path
+    })
+})
+
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello World! boss, great to see you')
 });
