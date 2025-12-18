@@ -4,8 +4,6 @@ import auth from "../../middleware/auth";
 
 const router = Router();
 
-
-
 router.get("/", auth("admin"), usersController.getUser);
 
 router.put("/:id", auth("admin", "customer"), usersController.updateSingleUser);
