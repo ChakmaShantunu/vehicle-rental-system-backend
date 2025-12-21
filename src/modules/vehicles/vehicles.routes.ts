@@ -1,17 +1,18 @@
 import { Router } from "express";
 import { vehiclesController } from "./vehicles.controller";
 import auth from "../../middleware/auth";
+import authorize from "../../middleware/authorize";
 
 const router = Router();
 
-router.post("/", auth, vehiclesController.createVehicle);
+router.post("/", authorize(["admin"]), vehiclesController.createVehicle);
 
 router.get("/", vehiclesController.getVehicle);
 
 router.get("/:id", vehiclesController.getSingleVehicle);
 
-router.put("/:id", vehiclesController.updateSingleVehicle);
+router.put("/:id", authorize(["admin"]), vehiclesController.updateSingleVehicle);
 
-router.delete("/:id", auth, vehiclesController.deleteSingleVehicle);
+router.delete("/:id", authorize(["admin"]), vehiclesController.deleteSingleVehicle);
 
 export const vehiclesRoutes = router;
